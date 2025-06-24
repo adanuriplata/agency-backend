@@ -18,3 +18,5 @@ railway.json
 # IDE
 .vscode
 .DS_Store
+
+dist/

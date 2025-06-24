@@ -1,0 +1,20 @@
+/src/generated/prisma
+# Node
+node_modules
+.env
+dist
+.prisma
+coverage
+npm-debug.log
+
+# Prisma
+*.sqlite
+*.db
+*.db-journal
+
+# Railway
+railway.json
+
+# IDE
+.vscode
+.DS_Store

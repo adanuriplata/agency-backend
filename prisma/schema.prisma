@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id         String          @id @default(cuid())
+  name       String
+  email      String          @unique
+  company    String?
+  createdAt  DateTime        @default(now())
+  accounts   ClientAccount[]
+}
+
+model ClientAccount {
+  id         String       @id @default(cuid())
+  clientId   String
+  service    String       // e.g., "CPanel", "WordPress"
+  username   String
+  password   String
+  url        String
+  notes      String?
+  updatedAt  DateTime     @updatedAt
+  client     Client       @relation(fields: [clientId], references: [id])
+}
+
+model Collaborator {
+  id          String          @id @default(cuid())
+  name        String
+  email       String          @unique
+  role        String
+  isActive    Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  accesses    AccessRecord[]
+}
+
+model AccessRecord {
+  id              String        @id @default(cuid())
+  service         String        // e.g., "Slack", "Asana"
+  username        String
+  password        String
+  url             String
+  notes           String?
+  collaboratorId  String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  collaborator    Collaborator  @relation(fields: [collaboratorId], references: [id])
+
+  reassignments   ReassignmentLog[]
+}
+
+model ReassignmentLog {
+  id               String        @id @default(cuid())
+  accessId         String
+  previousOwnerId  String
+  newOwnerId       String
+  reassignedAt     DateTime      @default(now())
+  access           AccessRecord  @relation(fields: [accessId], references: [id])
+}

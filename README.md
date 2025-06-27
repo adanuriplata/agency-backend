@@ -54,10 +54,11 @@ cd agency-backend
 npm install
 ```
 
-3. Create a `.env` file with your PostgreSQL connection string:
+3. Create a `.env` file with your PostgreSQL connection string and encryption key:
 
 ```env
 DATABASE_URL=postgresql://user:password@host:port/db
+ENCRYPTION_KEY=your_32_character_key
 ```
 
 4. Push the schema to your database:
@@ -100,7 +101,7 @@ The `/reassign-access` endpoint now also accepts an array `accessIds` to move mu
 ## 🚀 Deployment with Railway
 
 * Connect this GitHub repo to your Railway project.
-* Set the `DATABASE_URL` environment variable in Railway.
+* Set the `DATABASE_URL` and `ENCRYPTION_KEY` environment variables in Railway.
 * Railway will auto-deploy on every `git push`.
 
 ---

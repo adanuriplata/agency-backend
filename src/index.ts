@@ -1,12 +1,12 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import collaboratorsRouter from "./routes/collaborators";
 import reassignAccessRouter from "./routes/reassignAccess";
 import accessRecordsRouter from "./routes/accessRecords";
 import healthRouter from "./routes/health";
-
-dotenv.config();
 
 const app = express();
 

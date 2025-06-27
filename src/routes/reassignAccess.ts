@@ -5,13 +5,11 @@ const router = Router();
 const prisma = new PrismaClient();
 
 router.post("/", async (req: Request, res: Response): Promise<any> => {
-  const { accessId, newCollaboratorId } = req.body;
+  const { accessId, accessIds, newCollaboratorId } = req.body;
 
-  const access = await prisma.accessRecord.findUnique({
-    where: { id: accessId },
-  });
-  if (!access)
-    return res.status(404).json({ error: "Access record not found" });
+  const ids: string[] = accessIds || (accessId ? [accessId] : []);
+  if (ids.length === 0)
+    return res.status(400).json({ error: "No access IDs provided" });
 
   const newOwner = await prisma.collaborator.findUnique({
     where: { id: newCollaboratorId },
@@ -19,20 +17,32 @@ router.post("/", async (req: Request, res: Response): Promise<any> => {
   if (!newOwner)
     return res.status(404).json({ error: "Collaborator not found" });
 
-  const updated = await prisma.accessRecord.update({
-    where: { id: accessId },
-    data: { collaboratorId: newCollaboratorId },
-  });
+  const results = [] as any[];
 
-  await prisma.reassignmentLog.create({
-    data: {
-      accessId,
-      previousOwnerId: access.collaboratorId,
-      newOwnerId: newCollaboratorId,
-    },
-  });
+  for (const id of ids) {
+    const access = await prisma.accessRecord.findUnique({ where: { id } });
+    if (!access) {
+      results.push({ id, error: "Access record not found" });
+      continue;
+    }
 
-  res.json({ message: "Access reassigned successfully", updated });
+    const updated = await prisma.accessRecord.update({
+      where: { id },
+      data: { collaboratorId: newCollaboratorId },
+    });
+
+    await prisma.reassignmentLog.create({
+      data: {
+        accessId: id,
+        previousOwnerId: access.collaboratorId,
+        newOwnerId: newCollaboratorId,
+      },
+    });
+
+    results.push(updated);
+  }
+
+  res.json({ message: "Access reassigned successfully", updated: results });
 });
 
 export default router;

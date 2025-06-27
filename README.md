@@ -55,10 +55,11 @@ npm install
 ```
 
 
-3. Create a `.env` file with your PostgreSQL connection string and API token:
+3. Create a `.env` file with your PostgreSQL connection string and encryption key:
 
 ```env
 DATABASE_URL=postgresql://user:password@host:port/db
+ENCRYPTION_KEY=your_32_character_key
 CORS_ORIGIN=http://localhost:3000
 API_TOKEN=your-secret-token
 ```
@@ -113,7 +114,9 @@ The `/reassign-access` endpoint now also accepts an array `accessIds` to move mu
 ## 🚀 Deployment with Railway
 
 * Connect this GitHub repo to your Railway project.
-* Set the `DATABASE_URL` and `CORS_ORIGIN` environment variables in Railway.
+
+* Set the `DATABASE_URL`, `CORS_ORIGIN` and `ENCRYPTION_KEY` environment variables in Railway.
+
 * Railway will auto-deploy on every `git push`.
 
 ---

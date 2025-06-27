@@ -21,7 +21,7 @@ model ClientAccount {
   clientId   String
   service    String       // e.g., "CPanel", "WordPress"
   username   String
-  password   String
+  encryptedPassword   String
   url        String
   notes      String?
   updatedAt  DateTime     @updatedAt
@@ -42,7 +42,7 @@ model AccessRecord {
   id              String        @id @default(cuid())
   service         String        // e.g., "Slack", "Asana"
   username        String
-  password        String
+  encryptedPassword        String
   url             String
   notes           String?
   collaboratorId  String

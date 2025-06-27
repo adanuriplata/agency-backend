@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
+import { encrypt, decrypt } from "../utils/crypto";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -9,7 +10,11 @@ router.get("/", async (req, res) => {
   const records = await prisma.accessRecord.findMany({
     include: { collaborator: true },
   });
-  res.json(records);
+  const decrypted = records.map(({ encryptedPassword, ...rest }) => ({
+    ...rest,
+    password: decrypt(encryptedPassword),
+  }));
+  res.json(decrypted);
 });
 
 // Get a single access record by id
@@ -21,16 +26,25 @@ router.get("/:id", async (req, res): Promise<any> => {
   });
   if (!record)
     return res.status(404).json({ error: "Access record not found" });
-  res.json(record);
+  const { encryptedPassword, ...rest } = record;
+  res.json({ ...rest, password: decrypt(encryptedPassword) });
 });
 
 // Create a new access record
 router.post("/", async (req, res) => {
   const { service, username, password, url, notes, collaboratorId } = req.body;
   const created = await prisma.accessRecord.create({
-    data: { service, username, password, url, notes, collaboratorId },
+    data: {
+      service,
+      username,
+      encryptedPassword: encrypt(password),
+      url,
+      notes,
+      collaboratorId,
+    },
   });
-  res.status(201).json(created);
+  const { encryptedPassword, ...rest } = created;
+  res.status(201).json({ ...rest, password });
 });
 
 // Update an access record
@@ -39,9 +53,17 @@ router.put("/:id", async (req, res) => {
   const { service, username, password, url, notes, collaboratorId } = req.body;
   const updated = await prisma.accessRecord.update({
     where: { id },
-    data: { service, username, password, url, notes, collaboratorId },
+    data: {
+      service,
+      username,
+      encryptedPassword: encrypt(password),
+      url,
+      notes,
+      collaboratorId,
+    },
   });
-  res.json(updated);
+  const { encryptedPassword, ...rest } = updated;
+  res.json({ ...rest, password });
 });
 
 // Delete an access record

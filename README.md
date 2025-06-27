@@ -30,6 +30,7 @@ src/
 ├── index.ts               # Main app entrypoint
 ├── routes/                # Organized endpoints
 │   ├── collaborators.ts
+│   ├── accessRecords.ts
 │   └── reassignAccess.ts
 prisma/
 ├── schema.prisma          # Data models
@@ -69,6 +70,29 @@ npx prisma db push
 
 ```bash
 npm run dev
+```
+
+---
+
+## API Endpoints
+
+### Access Records
+
+| Method | Endpoint | Body Fields |
+| ------ | -------- | ----------- |
+| `GET`  | `/access-records` | – |
+| `GET`  | `/access-records/:id` | – |
+| `POST` | `/access-records` | `service`, `username`, `password`, `url`, `notes?`, `collaboratorId` |
+| `PUT`  | `/access-records/:id` | Same as `POST` |
+| `DELETE` | `/access-records/:id` | – |
+
+The `/reassign-access` endpoint now also accepts an array `accessIds` to move multiple accounts in one request:
+
+```json
+{
+  "accessIds": ["id1", "id2"],
+  "newCollaboratorId": "colabId"
+}
 ```
 
 ---

@@ -9,9 +9,15 @@ import authMiddleware from "./middleware/auth";
 
 dotenv.config();
 
+dotenv.config();
+
 const app = express();
 
-app.use(cors());
+const corsOptions = process.env.CORS_ORIGIN
+  ? { origin: process.env.CORS_ORIGIN.split(",") }
+  : {};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use("/health", healthRouter);

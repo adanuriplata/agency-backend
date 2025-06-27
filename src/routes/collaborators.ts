@@ -1,11 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { Router, Request, Response } from "express";
-// import { PrismaClient } from "../generated/prisma/client";
 
 const router = Router();
 const prisma = new PrismaClient();
 
-// GET all collaborators
 router.get("/", async (req, res) => {
   const collaborators = await prisma.collaborator.findMany({
     include: { accesses: true },
@@ -13,7 +11,6 @@ router.get("/", async (req, res) => {
   res.json(collaborators);
 });
 
-// ✅ Esta línea es la que te está marcando error. Esta es la forma correcta:
 router.get("/:id", async (req, res): Promise<any> => {
   const { id } = req.params;
   const collaborator = await prisma.collaborator.findUnique({

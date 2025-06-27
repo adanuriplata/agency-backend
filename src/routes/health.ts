@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 
 router.get("/", async (req, res) => {
   try {
-    // Intenta hacer un query simple a la base de datos
     await prisma.$queryRaw`SELECT 1`;
     res.status(200).json({ status: "ok", database: "connected" });
   } catch (error) {

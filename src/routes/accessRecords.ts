@@ -13,13 +13,14 @@ router.get("/", async (req, res) => {
 });
 
 // Get a single access record by id
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res): Promise<any> => {
   const { id } = req.params;
   const record = await prisma.accessRecord.findUnique({
     where: { id },
     include: { collaborator: true, reassignments: true },
   });
-  if (!record) return res.status(404).json({ error: "Access record not found" });
+  if (!record)
+    return res.status(404).json({ error: "Access record not found" });
   res.json(record);
 });
 

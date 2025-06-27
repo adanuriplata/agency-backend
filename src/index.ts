@@ -1,13 +1,20 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import collaboratorsRouter from "./routes/collaborators";
 import reassignAccessRouter from "./routes/reassignAccess";
 import accessRecordsRouter from "./routes/accessRecords";
 import healthRouter from "./routes/health";
 
+dotenv.config();
+
 const app = express();
 
-app.use(cors());
+const corsOptions = process.env.CORS_ORIGIN
+  ? { origin: process.env.CORS_ORIGIN.split(",") }
+  : {};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use("/collaborators", collaboratorsRouter);

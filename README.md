@@ -54,10 +54,11 @@ cd agency-backend
 npm install
 ```
 
-3. Create a `.env` file with your PostgreSQL connection string:
+3. Create a `.env` file with your PostgreSQL connection string and API token:
 
 ```env
 DATABASE_URL=postgresql://user:password@host:port/db
+API_TOKEN=your-secret-token
 ```
 
 4. Push the schema to your database:
@@ -73,6 +74,16 @@ npm run dev
 ```
 
 ---
+## 🔐 Authentication
+
+All endpoints (except `/health`) require a bearer token set via the `Authorization` header.
+
+```http
+Authorization: Bearer <your-token>
+```
+
+---
+
 
 ## API Endpoints
 

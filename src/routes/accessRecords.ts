@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import { encrypt, decrypt } from "../utils/crypto";
+import { validate } from "../middleware/validate";
+import { createAccessRecordSchema, updateAccessRecordSchema } from "../schemas/accessRecords";
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -31,7 +33,7 @@ router.get("/:id", async (req, res): Promise<any> => {
 });
 
 // Create a new access record
-router.post("/", async (req, res) => {
+router.post("/", validate(createAccessRecordSchema), async (req, res) => {
   const { service, username, password, url, notes, collaboratorId } = req.body;
   const created = await prisma.accessRecord.create({
     data: {
@@ -48,7 +50,7 @@ router.post("/", async (req, res) => {
 });
 
 // Update an access record
-router.put("/:id", async (req, res) => {
+router.put("/:id", validate(updateAccessRecordSchema), async (req, res) => {
   const { id } = req.params;
   const { service, username, password, url, notes, collaboratorId } = req.body;
   const updated = await prisma.accessRecord.update({
